@@ -425,20 +425,26 @@ const Contact = () => {
     e.preventDefault()
     setStatus('sending')
 
-    // REPLACE THESE WITH YOUR EMAILJS CODES
+    // REPLACE THESE WITH YOUR EMAILJS CODES - Verified from previous step
     const SERVICE_ID = 'service_mmq7qae'
     const TEMPLATE_ID = 'template_w52wtso'
-    const PUBLIC_KEY = 'your_public_key'
+    const PUBLIC_KEY = '-cYBAZ1EQW8D8xcWf'
 
     try {
       const templateParams = {
         from_name: formData.name,
         from_email: formData.email,
         message: formData.message,
-        to_name: 'Jay Thummar', // Your name
+        to_name: 'Jay Thummar',
       }
 
-      const res = await emailjs.send(SERVICE_ID, TEMPLATE_ID, templateParams, PUBLIC_KEY)
+      console.log('Sending email with params:', templateParams);
+
+      const res = await emailjs.send(SERVICE_ID, TEMPLATE_ID, templateParams, {
+        publicKey: PUBLIC_KEY,
+      })
+
+      console.log('EmailJS Response:', res);
 
       if (res.status === 200) {
         setStatus('success')
@@ -448,7 +454,9 @@ const Contact = () => {
         setStatus('error')
       }
     } catch (error) {
-      console.error('EmailJS Error:', error)
+      console.error('EmailJS Full Error:', error)
+      // Log more details if possible
+      if (error.text) console.error('Error text:', error.text);
       setStatus('error')
     }
   }
