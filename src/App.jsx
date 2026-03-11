@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import emailjs from '@emailjs/browser'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   Github,
@@ -423,19 +424,31 @@ const Contact = () => {
   const handleSubmit = async (e) => {
     e.preventDefault()
     setStatus('sending')
+
+    // REPLACE THESE WITH YOUR EMAILJS CODES
+    const SERVICE_ID = 'service_mmq7qae'
+    const TEMPLATE_ID = 'template_w52wtso'
+    const PUBLIC_KEY = 'your_public_key'
+
     try {
-      const res = await fetch('https://portfolio-backend-4p1q.onrender.com/api/contact', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
-      })
-      if (res.ok) {
+      const templateParams = {
+        from_name: formData.name,
+        from_email: formData.email,
+        message: formData.message,
+        to_name: 'Jay Thummar', // Your name
+      }
+
+      const res = await emailjs.send(SERVICE_ID, TEMPLATE_ID, templateParams, PUBLIC_KEY)
+
+      if (res.status === 200) {
         setStatus('success')
         setFormData({ name: '', email: '', message: '' })
+        setTimeout(() => setStatus(''), 5000)
       } else {
         setStatus('error')
       }
     } catch (error) {
+      console.error('EmailJS Error:', error)
       setStatus('error')
     }
   }
